@@ -1,0 +1,428 @@
+/* Claude Usage Monitor Styles - Advanced Liquid Glass Effect */
+#claude-usage-display {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 300px;
+  --claude-accent: #A9553A;
+  --claude-beige-bg: #F7F5EF;
+
+  background: #F7F5EF;
+  border-radius: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  z-index: 10000;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  /* Multi-layer shadow system */
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+
+  /* Dynamic border layers */
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background-clip: padding-box;
+}
+
+/* Advanced border system with gradient animation */
+#claude-usage-display::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.1) 75%,
+    rgba(255, 255, 255, 0.2) 100%);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+/* Enhanced highlight layer */
+#claude-usage-display::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+#claude-usage-display:hover {
+  background: #F7F5EF;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.16),
+    0 2px 4px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px) scale(1.02);
+}
+
+#claude-usage-display:hover::before {
+  opacity: 0.8;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.15) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    rgba(255, 255, 255, 0.3) 100%);
+}
+
+.usage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: #F7F5EF;
+  color: rgba(0, 0, 0, 0.85);
+  border-radius: 19px 19px 0 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  cursor: move;
+  user-select: none;
+  backdrop-filter: none;
+  position: relative;
+  z-index: 10;
+}
+
+.claude-brand { color: var(--claude-accent); }
+
+.usage-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    transparent 70%,
+    rgba(255, 255, 255, 0.08) 100%);
+  border-radius: 19px 19px 0 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.usage-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.usage-toggle {
+  background: none;
+  border: none;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.usage-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.usage-content {
+  padding: 18px;
+  background: #F7F5EF;
+  position: relative;
+  z-index: 5;
+}
+
+.usage-content::before { content: none; }
+
+.usage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 4px 0;
+}
+
+.usage-item:last-of-type {
+  margin-bottom: 12px;
+}
+
+.usage-label {
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.usage-value {
+  color: rgba(0, 0, 0, 0.9);
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.usage-progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 10px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.usage-progress::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%);
+  pointer-events: none;
+}
+
+.progress-bar {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s ease,
+              background 0.3s ease;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.1) 30%,
+    transparent 70%,
+    rgba(255, 255, 255, 0.2) 100%);
+  border-radius: 3px;
+  mix-blend-mode: overlay;
+}
+
+.progress-bar.normal {
+  /* Unified accent color */
+  background: linear-gradient(90deg,
+    rgba(169, 85, 58, 0.98) 0%,
+    rgba(169, 85, 58, 0.98) 100%);
+  box-shadow:
+    0 0 15px rgba(169, 85, 58, 0.45),
+    0 0 30px rgba(169, 85, 58, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.progress-bar.warning {
+  background: linear-gradient(90deg,
+    rgba(169, 85, 58, 0.98) 0%,
+    rgba(169, 85, 58, 0.98) 100%);
+  box-shadow:
+    0 0 15px rgba(169, 85, 58, 0.45),
+    0 0 30px rgba(169, 85, 58, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.progress-bar.danger {
+  background: linear-gradient(90deg,
+    rgba(169, 85, 58, 0.98) 0%,
+    rgba(169, 85, 58, 0.98) 100%);
+  box-shadow:
+    0 0 15px rgba(169, 85, 58, 0.45),
+    0 0 30px rgba(169, 85, 58, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* 深色主题适配 */
+@media (prefers-color-scheme: dark) {
+  #claude-usage-display {
+    background: rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .usage-header {
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .usage-content {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .usage-label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .usage-value {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .usage-progress {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Advanced Animation Effects */
+@keyframes liquidGlassEntrance {
+  from {
+    transform: translateX(120%) scale(0.8) rotateX(10deg);
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(100%);
+  }
+  50% {
+    transform: translateX(-5%) scale(1.02) rotateX(-2deg);
+    opacity: 0.8;
+    backdrop-filter: blur(16px) saturate(150%);
+  }
+  to {
+    transform: translateX(0) scale(1) rotateX(0deg);
+    opacity: 1;
+    backdrop-filter: blur(24px) saturate(180%);
+  }
+}
+
+@keyframes borderShimmer {
+  0%, 100% {
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.1) 25%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.1) 75%,
+      rgba(255, 255, 255, 0.2) 100%);
+  }
+  50% {
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.2) 25%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.2) 75%,
+      rgba(255, 255, 255, 0.35) 100%);
+  }
+}
+
+@keyframes subtleGlow {
+  0%, 100% {
+    filter: brightness(1) contrast(1);
+  }
+  50% {
+    filter: brightness(1.05) contrast(1.02);
+  }
+}
+
+#claude-usage-display {
+  animation: liquidGlassEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#claude-usage-display::before {
+  animation: borderShimmer 4s ease-in-out infinite;
+}
+
+.progress-bar {
+  animation: subtleGlow 3s ease-in-out infinite;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  #claude-usage-display {
+    width: 200px;
+    right: 10px;
+    top: 10px;
+    font-size: 12px;
+  }
+
+  .usage-header {
+    padding: 6px 10px;
+  }
+
+  .usage-content {
+    padding: 10px;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  #claude-usage-display {
+    border-width: 2px;
+    border-color: #000;
+  }
+
+  .usage-header {
+    background: #000;
+  }
+
+
+  .progress-bar.normal {
+    background: #008000;
+  }
+
+  .progress-bar.warning {
+    background: #ff8c00;
+  }
+
+  .progress-bar.danger {
+    background: #dc143c;
+  }
+
+/* Liquid glass backdrop layer for content script */
+.lg-glass {
+  position: relative;
+}
+
+.lg-glass .lg-warp {
+  display: none !important;
+}
+
+#claude-usage-display::before,
+#claude-usage-display::after {
+  content: none !important;
+}
+
+/* Ensure content renders above the warp */
+#claude-usage-display .usage-header,
+#claude-usage-display .usage-content {
+  position: relative;
+  z-index: 1;
+}
+}

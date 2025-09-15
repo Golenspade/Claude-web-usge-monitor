@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Usage Monitor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 340px;
+      min-height: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: 
+        radial-gradient(circle at 30% 50%, rgba(120, 119, 198, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 70% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(134, 239, 172, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+      color: white;
+      backdrop-filter: blur(20px) saturate(180%);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .header {
+      padding: 20px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(15px) saturate(150%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .claude-brand { color: #DA7756; }
+    
+    .header p {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    .content {
+      padding: 20px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 16px 12px;
+      text-align: center;
+      backdrop-filter: blur(10px) saturate(150%);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .stat-card:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+    
+    .usage-overview {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px) saturate(150%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .usage-overview::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .usage-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .usage-bar-container {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    
+    .usage-bar {
+      height: 100%;
+      background: linear-gradient(90deg, rgba(34, 197, 94, 0.8) 0%, rgba(168, 85, 247, 0.8) 100%);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+      position: relative;
+    }
+    
+    .usage-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%, rgba(255, 255, 255, 0.1) 100%);
+      border-radius: 4px;
+    }
+    
+    .usage-bar.warning {
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.8) 0%, rgba(251, 191, 36, 0.8) 100%);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+    }
+    
+    .usage-bar.danger {
+      background: linear-gradient(90deg, rgba(239, 68, 68, 0.8) 0%, rgba(248, 113, 113, 0.8) 100%);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    }
+    
+    .usage-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    
+    .plan-info {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px) saturate(150%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .plan-info::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .plan-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .plan-details {
+      font-size: 12px;
+      line-height: 1.4;
+      opacity: 0.9;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .btn:hover::before {
+      opacity: 1;
+    }
+    
+    .btn-primary {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-secondary {
+      background: rgba(0, 0, 0, 0.15);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(0, 0, 0, 0.25);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    .error {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1><span class="claude-brand">Claude</span> Usage Monitor</h1>
+    <p>Track your <span class="claude-brand">Claude</span> AI usage</p>
+  </div>
+  
+  <div class="content">
+    <div id="error-message" class="error" style="display: none;"></div>
+    
+    <div id="loading" class="loading">
+      Loading usage data...
+    </div>
+    
+    <div id="main-content" style="display: none;">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="model-display">Unknown</div>
+          <div class="stat-label">Model</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="usage-percent">0%</div>
+          <div class="stat-label">Usage</div>
+        </div>
+      </div>
+      
+      <div class="usage-overview">
+        <div class="usage-title">Daily Usage</div>
+        <div class="usage-bar-container">
+          <div class="usage-bar" id="usage-progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="usage-text">
+          <span id="usage-current">0 messages</span>
+          <span id="usage-limit">Unknown limit</span>
+        </div>
+        <div id="limit-timer" style="display:none;margin-top:6px;color:#A9553A;font-weight:600;">
+          Resets in: --
+        </div>
+      </div>
+      
+      <div class="plan-info">
+        <div class="plan-title">Plan: <span id="plan-type">Unknown</span></div>
+        <div class="plan-details" id="plan-details">
+          Detecting your Claude plan...
+        </div>
+      </div>
+      
+      <div class="actions">
+        <button class="btn btn-primary" id="refresh-btn">Refresh</button>
+        <button class="btn btn-secondary" id="reset-btn">Reset</button>
+      </div>
+      
+      <div class="actions" style="margin-top: 8px;">
+        <button class="btn btn-primary" id="test-btn">Test +1</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
