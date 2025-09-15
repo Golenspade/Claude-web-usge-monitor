@@ -31,6 +31,133 @@ Notes:
   2) It will generate dist/claude-usage-monitor.zip for you to load as above
 
 
+## English (Detailed)
+
+### Features
+
+> Important: The countdown strictly follows the official time shown by Claude (e.g., "resets 1:00 PM"). The timer appears only when an official time is present; we never assume a fixed window.
+
+- Real‑time monitoring of sent messages
+- Beautiful floating panel with progress bar
+- Clear usage percentage and bar fill
+- Smart notice when you approach the limit
+- Theme aware (light/dark)
+- Responsive layout
+- Persistent storage of usage data
+- Automatic daily reset for day-based counters
+
+### Installation
+
+#### 1. Prepare files
+
+```
+claude-usage-monitor/
+├── manifest.json      # Extension manifest
+├── content.js         # Content script
+├── background.js      # Background script
+├── popup.html         # Popup UI
+├── popup.js           # Popup logic
+├── styles.css         # Styles
+└── icons/             # Icons
+    ├── icon16.png
+    ├── icon32.png
+    ├── icon48.png
+    └── icon128.png
+```
+
+#### 2. Icons
+- Create your own icons, or use an online generator such as favicon.io
+
+#### 3. Load in Zen/Firefox
+1. Open Zen/Firefox
+2. Visit `about:debugging`
+3. Click "This Firefox"
+4. Click "Load Temporary Add-on"
+5. Select `manifest.json` inside the folder
+
+#### 4. Verify
+1. Open https://claude.ai
+2. After a few seconds, the floating panel should appear in the top‑right
+3. Click the extension icon to open the popup panel
+
+### Usage
+
+- Drag the title bar to move the panel
+- Click `−` / `+` to collapse/expand
+- Counters update after each message is sent
+
+Popup shows:
+- Today’s message count
+- Usage percentage estimated from the detected plan
+- Plan info (auto‑detected)
+- Manual refresh button
+- Reset counter button (with confirmation)
+
+### Plan detection
+- Claude Free — limited messages
+- Claude Pro — about 45 messages / 5 hours (subject to official changes)
+- Claude Max — about 200+ messages / 5 hours
+
+### Advanced configuration
+
+#### Custom limit
+If plan detection is off for your account, you can set a custom limit:
+
+```javascript
+// Example: set a custom limit to 100 messages
+this.usageData.dailyLimit = 100;
+```
+
+#### Change reset baseline
+Default behavior resets at midnight for day‑based counters; adjust logic in `background.js` if needed (see `getNextMidnight()`).
+
+### Troubleshooting
+
+- Panel not visible
+  1) Ensure you are on claude.ai
+  2) Check the browser console for errors
+  3) Refresh the page
+
+- Inaccurate counts
+  1) Click Refresh
+  2) Avoid multiple Claude tabs sending simultaneously
+  3) Reset the counter
+
+- Permissions
+  1) Ensure the extension has access to claude.ai
+  2) Re‑load the extension
+
+### Development notes
+- WebExtensions API (Manifest V3)
+- JavaScript (ES6+), CSS3
+
+Key pieces:
+1) Content Script (`content.js`) — observes DOM, detects sends, parses limit info
+2) Background Script (`background.js`) — storage and scheduling
+3) Popup UI (`popup.html/js`) — visualization and interaction
+
+### Data schema (storage)
+
+```javascript
+{
+  messagesCount: 0,        // message count
+  tokensUsed: 0,           // token usage (TBD)
+  lastResetTime: "date",   // last daily reset timestamp
+  planType: "pro",         // plan type
+  dailyLimit: 45,          // daily limit baseline
+  currentUsagePercent: 0   // computed usage percentage
+}
+```
+
+### Changelog (Highlights)
+- v0.1.0 — Official reset‑time countdown, OOTB zip, bilingual README, removed test button
+
+### License
+MIT License
+
+### Disclaimer
+This is not an official Anthropic product. Usage estimates are inferred from the web UI. Always rely on Claude’s own official indicators.
+
 
 ## 开箱即用（Out-of-the-box）
 
