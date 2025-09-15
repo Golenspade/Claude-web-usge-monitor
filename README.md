@@ -18,12 +18,40 @@ Notes:
 - Minutes are rounded up (ceil), so +/-1 minute display differences are expected
 
 ---
+### Quick install (Out-of-the-box)
+
+- Option 1 — Download the ready-made zip and load it as an unpacked extension:
+  1) Download dist/claude-usage-monitor.zip
+  2) Unzip it
+  3) In Chrome/Edge: Extensions → Developer mode → Load unpacked → select the unzipped claude-usage-monitor folder
+  4) In Firefox/Zen: about:debugging → This Firefox → Load Temporary Add-on → select manifest.json in that folder
+
+- Option 2 — Build locally with a one-liner:
+  1) Run scripts/pack.sh
+  2) It will generate dist/claude-usage-monitor.zip for you to load as above
+
+
+
+## 开箱即用（Out-of-the-box）
+
+- 方式一：下载现成压缩包并加载
+  1）下载 dist/claude-usage-monitor.zip 并解压
+  2）Chrome/Edge：扩展程序 → 开发者模式 → 加载已解压的扩展程序 → 选择解压后的 claude-usage-monitor 目录
+  3）Firefox/Zen：about:debugging → This Firefox → Load Temporary Add-on → 选择该目录下的 manifest.json
+
+- 方式二：本地一键打包
+  1）运行 scripts/pack.sh
+  2）脚本会生成 dist/claude-usage-monitor.zip，按方式一的步骤加载
+
 
 # Claude Usage Monitor for Zen Browser
 
 一个专为Zen Browser设计的Claude AI用量监控插件，帮助你实时跟踪Claude网页版的使用情况。
 
 ## 功能特点
+
+> 重要说明：倒计时严格以 Claude 官方界面显示为准（例如 “resets 1:00 PM”）。当且仅当解析到官方的重置时间时才显示；若页面没有给出明确时间，则不显示倒计时，不再使用任何固定 +5 小时的假设。
+
 
 - 🔥 **实时监控** - 自动跟踪Claude消息发送数量
 - 📊 **可视化界面** - 美观的悬浮窗口显示用量信息

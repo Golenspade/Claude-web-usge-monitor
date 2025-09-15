@@ -24,7 +24,13 @@ pnpm-debug.log*
 .env.*
 
 # Archives
-*.zip
 *.tar
 *.tar.gz
+
+# Local references (do not track)
+liquid-glass-reference/
+
+# Keep the ready-to-use zip in version control
+!dist/
+!dist/claude-usage-monitor.zip
 
